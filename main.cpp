@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Declaraci贸n de las variables y estructuras que se implementaran en el proyecto------------------------
+// Declaracion de las variables y estructuras que se implementaran en el proyecto ------------------------
 struct Vehiculo {
     char modelo[45];
     char conductor[45];
@@ -21,6 +21,7 @@ struct Usuario {
     int ci;
     char nombre[45];
     char sectorActual[45];
+    int contadorViajes;
 };
 
 struct Sector {
@@ -49,6 +50,7 @@ int ci,ciConductor;
 
 fstream DB;
 fstream aux;
+fstream aux2;
 
 
 Usuario usuario;
@@ -61,7 +63,7 @@ Sector sector;
 
 
 
-// Funci贸n main------------------------------------------------------------------------
+// Funcion main------------------------------------------------------------------------
 
 int main(){
 
@@ -100,8 +102,8 @@ int main(){
 
 //Menu principal---------------------------------------------------------------------
 
-/*Esta funci贸n muestra por pantalla las opciones del men煤 principal y retorna un numero que sirve como indicador 
-para indicar a que men煤 desea ir el usuario */
+/*Esta funcion muestra por pantalla las opciones del menu principal y retorna un numero que sirve como indicador 
+para indicar a que menos desea ir el usuario */
 
 int MenuPrincipal(){
     system("cls");
@@ -125,7 +127,7 @@ int MenuPrincipal(){
 
 
 
-//Sub menu del menu de gesti贸n ------------------------------------------
+//Sub menu del menu de gestion ------------------------------------------
 
 /*Esta funcion muestra por pantalla las opciones que tiene el usuario para gestionar*/
 
@@ -187,7 +189,7 @@ void subMenuGestion(){
 
     cout << "presiona enter para volver al menu principal" << endl;
     system("pause");
-	//system("read -p '...' var");
+	
 }
 
 
@@ -195,8 +197,8 @@ void subMenuGestion(){
 
 // Menu para hacer el CRUD de la identidad seleccionada por el usuario-----------------------
 
-/*Esta funci贸n muestra al usuario las operaciones CRUD que desee hacer y retorna un entero
-para indicar cual fue la funci贸n que selecciono el usuario*/
+/*Esta funcion muestra al usuario las operaciones CRUD que desee hacer y retorna un entero
+para indicar cual fue la funcion que selecciono el usuario*/
 
 int subMenuEntidad( string entidad) {
     system("cls");
@@ -233,7 +235,7 @@ int subMenuEntidad( string entidad) {
 
 //Menu de servicios-----------------------------------------------------------------
 
-/* Esta funci贸n muestra por pantalla las funciones que puede hacer el usuario en el menu servicio*/
+/* Esta funcion muestra por pantalla las funciones que puede hacer el usuario en el menu servicio*/
 
 void subMenuServicio(){
     system("cls");
@@ -309,7 +311,7 @@ void crearEntidad(string entidad) {
         Usuario usuario = infUsuario(); // Almacena los datos en la variable global "usuario"
         if (verificarExistencia(entidad, usuario.ci)) {
             cout << "El usuario ingresado ya existe" << endl;
-            system("read -p 'Presione enter para volver al menu principal...' var");
+            system("pause");
             DB.close();
             MenuPrincipal();
         } else {
@@ -337,7 +339,7 @@ void crearEntidad(string entidad) {
 
         if(verificarExistenciaSector(sector.nombre)){
             cout << "El sector ya existe" << endl;
-            system("read -p 'Pulse enter para volver al menu principal' var");
+            system("pause");
             MenuPrincipal();
         }else{
             DB.open("Sectores.dat", ios::out | ios::app | ios::binary);
@@ -345,11 +347,11 @@ void crearEntidad(string entidad) {
             if(DB.is_open()){
                 DB.write((char *)&sector, sizeof(Sector));
                 DB.close();
-                system("clear");
+                system("cls");
                 cout << "-----------------" << endl;
                 cout << "|Sector guardado|" << endl;
                 cout << "-----------------" << endl;
-                system("read -p 'presione enter para continuar' var");
+                system("pause");
 
             }
         }
@@ -393,8 +395,8 @@ void mostrarEntidad(string entidad){
             
         }
         system("pause");
-        //system("read -p 'presione enter para continuar' var");
-    }
+       
+	}
 }
     if (!strcasecmp(entidad.c_str(),"usuario")){
 
@@ -733,7 +735,7 @@ void solicitudTraslado(int ci) {
 
     while (DB.read(reinterpret_cast<char*>(&usuario), sizeof(Usuario))) {
         if (usuario.ci == ci) {
-            // Encontrado el usuario
+            usuario.contadorViajes++;
             DB.close();  // Cerrar el archivo de usuarios antes de abrir el de veh韈ulos
 
             DB.open("vehiculos.dat", ios::in | ios::out | ios::binary);
@@ -836,7 +838,7 @@ void solicitarConductor(int ciUsuario, int ciConductor) {
 
     if (realizado) {
         cout << "----------REALIZANDO TRASLADO----------" << endl;
-        system("read -p 'presione enter cuando termine el traslado' var");
+        system("pause");
 
         DB.open("usuarios.dat", ios::in | ios::out | ios::binary);
         if (DB.is_open()) {
@@ -866,6 +868,7 @@ void verificarViajeRealizado(int ci , int ciConductor) {
 
     while (DB.read(reinterpret_cast<char*>(&usuario), sizeof(Usuario))) {
         if (usuario.ci == ci) {
+       
             DB.close();  // Cerrar el archivo de usuarios antes de abrir el de veh韈ulos
 
             DB.open("vehiculos.dat", ios::in | ios::out | ios::binary);
@@ -890,6 +893,7 @@ void verificarViajeRealizado(int ci , int ciConductor) {
 
     if (viajeRealizado==true) {
         cout << "FELIZ VIAJE" << endl;
+      
     } else {
         cout << "El servicio no se encuentra disponible ahora mismo. Intentelo m醩 tarde." << endl;
     }
@@ -1013,11 +1017,13 @@ void estadisticas(string entidad) {
 
         // Abrir archivo de lectura (vehiculos.dat)
         aux.open("vehiculos.dat", ios::in | ios::binary);
+        aux2.open("usuarios.dat", ios::in | ios::binary);
 
         // Crear y abrir archivo de escritura en modo truncado
         DB.open("Estadisticas.txt", ios::out | ios::trunc);
        
 
+		DB<<"\tEstadisticas Conductores"<<endl;
         // Leer y escribir en el archivo de estad韘ticas
         while (aux.read(reinterpret_cast<char*>(&vehiculo), sizeof(Vehiculo))) {
             DB << "Modelo: " << vehiculo.modelo << endl;
@@ -1025,10 +1031,20 @@ void estadisticas(string entidad) {
             DB << "Carreras totales realizadas: " << vehiculo.contadorViajes << endl;
             DB << "---------------------------" << endl;
         }
+        
+        DB<<"\tEstadisticas Usuarios"<<endl;
+        
+        while(aux2.read(reinterpret_cast<char*>(&usuario), sizeof(Usuario))){
+        	DB << "Usuario: " <<usuario.nombre<<endl;
+        	DB << "Traslados realizados: "<< usuario.contadorViajes<<endl;
+			DB << "---------------------------" << endl;
+		}
+		
 
         // Cerrar ambos archivos
         DB.close();
         aux.close();
+        aux2.close();
     
 }
 
@@ -1075,6 +1091,8 @@ Usuario infUsuario(){
 
     cout << "Cedula del usuario: ";
     cin >> usuario.ci;
+    
+   
 
     return usuario;
 }

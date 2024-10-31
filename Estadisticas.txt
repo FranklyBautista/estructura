@@ -1,4 +1,14 @@
-Modelo: Aveo
-Conductor: Daniel
-Carreras totales realizadas: 2
+	Estadisticas Conductores
+Modelo: AVO
+Conductor: Gabriel
+Carreras totales realizadas: 1
 ---------------------------
+Modelo: Honda
+Conductor: Betsy
+Carreras totales realizadas: 3
+---------------------------
+	Estadisticas Usuarios
+Usuario: Polo
+Traslados realizados: 4755904
+Usuario: Paolo
+Traslados realizados: 4755904
