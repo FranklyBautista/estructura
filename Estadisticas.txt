@@ -1,0 +1,4 @@
+Modelo: Aveo
+Conductor: Daniel
+Carreras totales realizadas: 2
+---------------------------
