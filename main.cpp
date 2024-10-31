@@ -88,7 +88,7 @@ int main(){
         }
     } while (aux != 0);
 	
-    cout << "Has salido de la aplicacion" << endl;
+    cout << "Dia Finalizado, Archivo Estadistico generado" << endl;
 
     return 0;
 }
@@ -112,7 +112,7 @@ int MenuPrincipal(){
     cout << "BIENVENIDO A SpeedCar"<<endl;
     cout << "1) Menu de gestion"<<endl;
     cout << "2) menu de servicios"<<endl;
-    cout << "0) salir de la aplicacion" << endl;
+    cout << "0) Finalizar Dia" << endl;
     cout << "Ingrese su opcion ->";
     cin >> aux;
 

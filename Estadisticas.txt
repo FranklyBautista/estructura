@@ -10,5 +10,7 @@ Carreras totales realizadas: 3
 	Estadisticas Usuarios
 Usuario: Polo
 Traslados realizados: 4755904
+---------------------------
 Usuario: Paolo
 Traslados realizados: 4755904
+---------------------------
